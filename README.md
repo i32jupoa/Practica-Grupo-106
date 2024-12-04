@@ -1,1 +1,1 @@
-"Pr ctica del grupo 106" 
+"Practica del grupo 106" 
