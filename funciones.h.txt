@@ -5,19 +5,30 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <ctime>
 
 struct Alumno {
     std::string nombre;
     std::string apellidos;
     std::string dni;
     std::string correo;
+    std::string estadoInscripcion;  // Estado de la inscripcion
+    std::string fechaInscripcion;   // Fecha de inscripcion
+};
+
+struct Plan {
+    std::string nombre;
+    std::string universidad;
+    std::vector<std::string> asignaturas;
 };
 
 bool existeAlumno(const std::string &dni, const std::string &fichero);
+bool perteneceAUniversidad(const std::string &dni);
+bool existePlan(const std::string &nombrePlan);
 void inscribirAlumno();
 void agregarPlan();
 void consultarInscripcion();
 void mostrarInscritos();
 void pruebasErrores();
 
-#endif // FUNCIONES_H
+#endif
