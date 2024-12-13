@@ -1,0 +1,120 @@
+#include "funciones.h"
+
+bool existeAlumno(const std::string &dni, const std::string &fichero) {
+    std::ifstream archivo(fichero);
+    std::string linea;
+    while (getline(archivo, linea)) {
+        if (linea.find(dni) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void inscribirAlumno() {
+    Alumno nuevoAlumno;
+    std::cout << "Ingrese el nombre: ";
+    std::cin.ignore();
+    std::getline(std::cin, nuevoAlumno.nombre);
+    std::cout << "Ingrese los apellidos: ";
+    std::getline(std::cin, nuevoAlumno.apellidos);
+    std::cout << "Ingrese el DNI: ";
+    std::getline(std::cin, nuevoAlumno.dni);
+    std::cout << "Ingrese el correo electronico: ";
+    std::getline(std::cin, nuevoAlumno.correo);
+
+    if (existeAlumno(nuevoAlumno.dni, "inscritos.txt")) {
+        std::cout << "El alumno ya esta inscrito.\n";
+        return;
+    }
+
+    std::ofstream archivo("inscritos.txt", std::ios::app);
+    if (!archivo) {
+        std::cerr << "Error al abrir el fichero de inscritos.\n";
+        return;
+    }
+
+    archivo << nuevoAlumno.nombre << ", " << nuevoAlumno.apellidos << ", "
+            << nuevoAlumno.dni << ", " << nuevoAlumno.correo << "\n";
+    std::cout << "Alumno inscrito correctamente.\n";
+}
+
+void agregarPlan() {
+    std::string plan;
+    std::cout << "Ingrese el plan de convalidacion: ";
+    std::cin.ignore();
+    std::getline(std::cin, plan);
+
+    std::ofstream archivo("planes.txt", std::ios::app);
+    if (!archivo) {
+        std::cerr << "Error al abrir el fichero de planes.\n";
+        return;
+    }
+
+    archivo << plan << "\n";
+    std::cout << "Plan agregado correctamente.\n";
+}
+
+void consultarInscripcion() {
+    std::string dni;
+    std::cout << "Ingrese el DNI del alumno a buscar: ";
+    std::cin.ignore();
+    std::getline(std::cin, dni);
+
+    std::ifstream archivo("inscritos.txt");
+    if (!archivo) {
+        std::cerr << "Error al abrir el fichero de inscritos.\n";
+        return;
+    }
+
+    std::string linea;
+    bool encontrado = false;
+    while (getline(archivo, linea)) {
+        if (linea.find(dni) != std::string::npos) {
+            std::cout << "Datos del alumno: " << linea << "\n";
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        std::cout << "Alumno no encontrado.\n";
+    }
+}
+
+void mostrarInscritos() {
+    std::ifstream archivo("inscritos.txt");
+    if (!archivo) {
+        std::cerr << "Error al abrir el fichero de inscritos.\n";
+        return;
+    }
+
+    std::string linea;
+    std::cout << "\nLista de alumnos inscritos:\n";
+    while (getline(archivo, linea)) {
+        std::cout << linea << "\n";
+    }
+}
+
+void pruebasErrores() {
+    std::cout << "\n--- Pruebas de errores ---\n";
+
+    std::cout << "Prueba 1: Intentar inscribir un alumno existente.\n";
+    std::ofstream prueba("inscritos.txt", std::ios::app);
+    prueba << "Juan, Perez, 12345678X, juan.perez@example.com\n";
+    prueba.close();
+    inscribirAlumno();
+
+    std::cout << "Prueba 2: Agregar plan con archivo bloqueado.\n";
+    std::ofstream archivoBloqueado("planes.txt", std::ios::app);
+    archivoBloqueado.close();
+    agregarPlan();
+
+    std::cout << "Prueba 3: Consultar un alumno inexistente.\n";
+    consultarInscripcion();
+
+    std::cout << "Prueba 4: Mostrar inscritos con archivo vacío.\n";
+    std::ofstream limpiar("inscritos.txt");
+    limpiar.close();
+    mostrarInscritos();
+}

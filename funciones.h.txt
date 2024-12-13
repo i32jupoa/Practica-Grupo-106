@@ -1,0 +1,23 @@
+#ifndef FUNCIONES_H
+#define FUNCIONES_H
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
+struct Alumno {
+    std::string nombre;
+    std::string apellidos;
+    std::string dni;
+    std::string correo;
+};
+
+bool existeAlumno(const std::string &dni, const std::string &fichero);
+void inscribirAlumno();
+void agregarPlan();
+void consultarInscripcion();
+void mostrarInscritos();
+void pruebasErrores();
+
+#endif // FUNCIONES_H
