@@ -186,6 +186,7 @@ void consultarInscripcion() {
     std::ifstream archivo("inscritos.txt");
     std::string linea;
     bool encontrado = false;
+<<<<<<< HEAD
 
     // Leemos cada línea del archivo
     while (getline(archivo, linea)) {
@@ -242,6 +243,16 @@ void consultarInscripcion() {
     if (!encontrado) {
         std::cout << "Alumno con DNI " << dni << " no encontrado. Aún no está inscrito.\n";
     }
+=======
+    while (getline(archivo, linea)) {
+        if (linea.find(dni) != std::string::npos) {
+            std::cout << "Información del alumno: " << linea << "\n";
+            encontrado = true;
+            break;
+        }
+    }
+    if (!encontrado) std::cout << "Alumno no encontrado.\n";
+>>>>>>> e63a7618487bf3ef99c076fe214f28da6bd2abd9
 }
 
 void mostrarInscritos() {
