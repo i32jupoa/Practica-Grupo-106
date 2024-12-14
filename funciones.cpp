@@ -45,7 +45,20 @@ bool existeCarrera(const std::string &carrera) {
 }
 
 bool existePlan(const std::string &nombrePlan) {
-    return existeEnFichero(nombrePlan, "planes.txt");
+    std::ifstream archivo("planes.txt");
+    if (!archivo) {
+        std::cerr << "Error al abrir el fichero de planes.\n";
+        return false;
+    }
+
+    std::string linea;
+    while (getline(archivo, linea)) {
+        if (linea.find(nombrePlan) != std::string::npos) {
+            // Verifica si el nombre del plan coincide exactamente
+            return true;
+        }
+    }
+    return false;
 }
 
 std::string obtenerFechaActual() {
@@ -57,61 +70,70 @@ std::string obtenerFechaActual() {
 
 void inscribirAlumno() {
     Alumno nuevoAlumno;
-    std::string universidad, carrera;
+    std::string dni, nombrePlan, universidad, carrera;
 
-    // Datos del alumno
+    // 1. Ingresar el DNI y verificar si está en alumnos.txt
+    std::cout << "Ingrese el DNI del alumno: ";
+    std::getline(std::cin, dni);
+    if (!existeEnFichero(dni, "alumnos.txt")) {
+        std::cout << "El alumno no cumple los requisitos para cursar el programa SICUE.\n";
+        return;
+    }
+
+    // 2. Ingresar el nombre
     std::cout << "Ingrese el nombre: ";
     std::getline(std::cin, nuevoAlumno.nombre);
+
+    // 3. Ingresar los apellidos
     std::cout << "Ingrese los apellidos: ";
     std::getline(std::cin, nuevoAlumno.apellidos);
-    std::cout << "Ingrese el DNI: ";
-    std::getline(std::cin, nuevoAlumno.dni);
 
-    // Universidad
-    std::cout << "Ingrese la universidad: ";
-    std::getline(std::cin, universidad);
-    if (!perteneceAUniversidad(universidad)) {
-        std::cout << "La universidad no admite el plan SICUE.\n";
+    // 4. Ingresar el correo
+    std::cout << "Ingrese el correo electrónico: ";
+    std::getline(std::cin, nuevoAlumno.correo);
+
+    // 5. Ingresar el nombre del plan y verificar que exista
+    std::cout << "Ingrese el nombre del plan: ";
+    std::getline(std::cin, nombrePlan);
+    if (!existePlan(nombrePlan)) {
+        std::cout << "El plan no existe.\n";
+        return;  // Termina la ejecución de la función si el plan no existe
+    }
+
+    // 6. Ingresar cuatrimestre (1 o 2) y validar
+    int cuatrimestre;
+    std::cout << "Ingrese la duración del plan (1 para 1 cuatrimestre, 2 para 2 cuatrimestres): ";
+    std::cin >> cuatrimestre;
+    std::cin.ignore();  // Limpiar el buffer del cin
+    if (cuatrimestre != 1 && cuatrimestre != 2) {
+        std::cout << "Opción no válida. Debe seleccionar 1 o 2.\n";
         return;
     }
 
-    // Carrera
-    std::cout << "Ingrese la carrera: ";
-    std::getline(std::cin, carrera);
-    if (!existeCarrera(carrera)) {
-        std::cout << "La carrera no existe en el sistema.\n";
-        return;
+    // 7. Confirmar inscripción
+    char confirmacion;
+    std::cout << "¿Desea confirmar la inscripción? (S/N): ";
+    std::cin >> confirmacion;
+    std::cin.ignore();  // Limpiar el buffer del cin
+    if (confirmacion == 'S' || confirmacion == 's') {
+        // Guardar en inscritos.txt
+        nuevoAlumno.dni = dni;  // Añadir el DNI a la estructura
+        nuevoAlumno.estadoInscripcion = "Confirmado";
+        nuevoAlumno.fechaInscripcion = obtenerFechaActual();
+        std::ofstream archivoInscritos("inscritos.txt", std::ios::app);
+        if (!archivoInscritos) {
+            std::cerr << "Error al abrir el fichero de inscritos.\n";
+            return;
+        }
+        archivoInscritos << nuevoAlumno.dni << ", "  // DNI
+                         << nuevoAlumno.nombre << " " << nuevoAlumno.apellidos << ", "  // Nombre y Apellidos
+                         << nuevoAlumno.correo << ", "  // Correo electrónico
+                         << nombrePlan << ", "  // Nombre del plan
+                         << cuatrimestre << " cuatrimestre(s)\n";  // Duración del plan
+        std::cout << "Inscripción confirmada correctamente.\n";
+    } else {
+        std::cout << "Inscripción cancelada.\n";
     }
-
-    // Asignaturas
-    std::vector<std::string> asignaturas;
-    std::string asignatura;
-    std::cout << "Ingrese las asignaturas a cursar (escriba 'fin' para terminar): \n";
-    while (true) {
-        std::getline(std::cin, asignatura);
-        if (asignatura == "fin") break;
-        asignaturas.push_back(asignatura);
-    }
-
-    // Guardar en planes.txt
-    std::ofstream archivoPlanes("planes.txt", std::ios::app);
-    if (!archivoPlanes) {
-        std::cerr << "Error al abrir el fichero de planes.\n";
-        return;
-    }
-    archivoPlanes << "Plan: " << carrera << ", Universidad: " << universidad << ", Asignaturas: ";
-    for (const auto &asig : asignaturas) archivoPlanes << asig << " ";
-    archivoPlanes << "\n";
-
-    // Guardar en inscritos.txt
-    nuevoAlumno.estadoInscripcion = "En trámite";
-    nuevoAlumno.fechaInscripcion = obtenerFechaActual();
-    std::ofstream archivoInscritos("inscritos.txt", std::ios::app);
-    archivoInscritos << nuevoAlumno.nombre << ", " << nuevoAlumno.apellidos << ", "
-                     << nuevoAlumno.dni << ", " << nuevoAlumno.estadoInscripcion << ", Fecha: "
-                     << nuevoAlumno.fechaInscripcion << "\n";
-
-    std::cout << "Alumno inscrito correctamente.\n";
 }
 
 void agregarPlan() {
