@@ -1,10 +1,9 @@
-#include <iostream>
 #include "funciones.h"
 
 int main() {
     int opcion;
     do {
-        std::cout << "\n--- Sistema de Gestion SICUE ---\n";
+        std::cout << "\n--- Sistema Gestion SICUE ---\n";
         std::cout << "1. Inscribir alumno\n";
         std::cout << "2. Agregar plan de convalidacion\n";
         std::cout << "3. Consultar inscripcion\n";
@@ -13,7 +12,7 @@ int main() {
         std::cout << "6. Salir\n";
         std::cout << "Seleccione una opcion: ";
         std::cin >> opcion;
-        std::cin.ignore(); // Limpiar el buffer de entrada
+        std::cin.ignore();
 
         switch (opcion) {
             case 1:
@@ -35,9 +34,10 @@ int main() {
                 std::cout << "Saliendo del sistema...\n";
                 break;
             default:
-                std::cout << "Opcion no valida. Intente de nuevo.\n";
+                std::cout << "Opción no válida. Intente de nuevo.\n";
         }
     } while (opcion != 6);
 
     return 0;
 }
+
