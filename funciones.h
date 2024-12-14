@@ -12,8 +12,8 @@ struct Alumno {
     std::string apellidos;
     std::string dni;
     std::string correo;
-    std::string estadoInscripcion;  // Estado de la inscripcion
-    std::string fechaInscripcion;   // Fecha de inscripcion
+    std::string estadoInscripcion;
+    std::string fechaInscripcion;
 };
 
 struct Plan {
@@ -22,13 +22,15 @@ struct Plan {
     std::vector<std::string> asignaturas;
 };
 
-bool existeAlumno(const std::string &dni, const std::string &fichero);
-bool perteneceAUniversidad(const std::string &dni);
+bool existeEnFichero(const std::string &dato, const std::string &fichero);
+bool perteneceAUniversidad(const std::string &universidad);
+bool existeCarrera(const std::string &carrera);
 bool existePlan(const std::string &nombrePlan);
 void inscribirAlumno();
 void agregarPlan();
 void consultarInscripcion();
 void mostrarInscritos();
 void pruebasErrores();
+std::string obtenerFechaActual();
 
 #endif
