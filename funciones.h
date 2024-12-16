@@ -6,6 +6,10 @@
 #include <string>
 #include <vector>
 #include <ctime>
+#include <cassert>
+#include <sstream>
+#include <cctype>
+#include <algorithm>
 
 struct Alumno {
     std::string nombre;
@@ -32,5 +36,7 @@ void consultarInscripcion();
 void mostrarInscritos();
 void pruebasErrores();
 std::string obtenerFechaActual();
+void pruebaPerteneceAUniversidad();
+void pruebaExisteCarrera();
 
 #endif

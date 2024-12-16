@@ -1,11 +1,37 @@
 #include "funciones.h"
 
+std::string trim(const std::string &s) {
+    auto start = s.begin();
+    while (start != s.end() && std::isspace(*start)) {
+        ++start;
+    }
+
+    auto end = s.end();
+    do {
+        --end;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+
+    return std::string(start, end + 1);
+}
+
+// Función para convertir texto a minúsculas
+std::string toLower(const std::string &s) {
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
 // Función genérica para buscar si un dato existe en un fichero
 bool existeEnFichero(const std::string &dato, const std::string &fichero) {
     std::ifstream archivo(fichero);
+    if (!archivo.is_open()) {
+        std::cerr << "Error al abrir el fichero: " << fichero << "\n";
+        return false;
+    }
+
     std::string linea;
     while (getline(archivo, linea)) {
-        if (linea.find(dato) != std::string::npos) {
+        if (toLower(trim(linea)) == toLower(trim(dato))) {
             return true;
         }
     }
@@ -13,52 +39,15 @@ bool existeEnFichero(const std::string &dato, const std::string &fichero) {
 }
 
 bool perteneceAUniversidad(const std::string &universidad) {
-    std::ifstream archivo("universidad.txt");
-    if (!archivo) {
-        std::cerr << "Error al abrir el fichero de universidades.\n";
-        return false;
-    }
-
-    std::string linea;
-    while (getline(archivo, linea)) {
-        if (linea == universidad) {  // Compara si la línea es exactamente la universidad
-            return true;
-        }
-    }
-    return false;
+    return existeEnFichero(universidad, "universidad.txt");
 }
 
 bool existeCarrera(const std::string &carrera) {
-    std::ifstream archivo("carrera.txt");
-    if (!archivo) {
-        std::cerr << "Error al abrir el fichero de carreras.\n";
-        return false;
-    }
-
-    std::string linea;
-    while (getline(archivo, linea)) {
-        if (linea == carrera) {  // Compara si la línea es exactamente la carrera
-            return true;
-        }
-    }
-    return false;
+    return existeEnFichero(carrera, "carrera.txt");
 }
 
 bool existePlan(const std::string &nombrePlan) {
-    std::ifstream archivo("planes.txt");
-    if (!archivo) {
-        std::cerr << "Error al abrir el fichero de planes.\n";
-        return false;
-    }
-
-    std::string linea;
-    while (getline(archivo, linea)) {
-        if (linea.find(nombrePlan) != std::string::npos) {
-            // Verifica si el nombre del plan coincide exactamente
-            return true;
-        }
-    }
-    return false;
+    return existeEnFichero(nombrePlan, "planes.txt");
 }
 
 std::string obtenerFechaActual() {
@@ -76,7 +65,7 @@ void inscribirAlumno() {
     std::cout << "Ingrese el DNI del alumno: ";
     std::getline(std::cin, dni);
     if (!existeEnFichero(dni, "alumnos.txt")) {
-        std::cout << "El alumno no cumple los requisitos para cursar el programa SICUE.\n";
+        std::cout << "El alumno no cumple los requisitos para cursar el programa SICUE.\n\n";
         return;
     }
 
@@ -96,7 +85,7 @@ void inscribirAlumno() {
     std::cout << "Ingrese el nombre del plan: ";
     std::getline(std::cin, nombrePlan);
     if (!existePlan(nombrePlan)) {
-        std::cout << "El plan no existe.\n";
+        std::cout << "El plan no existe.\n\n";
         return;  // Termina la ejecución de la función si el plan no existe
     }
 
@@ -106,7 +95,7 @@ void inscribirAlumno() {
     std::cin >> cuatrimestre;
     std::cin.ignore();  // Limpiar el buffer del cin
     if (cuatrimestre != 1 && cuatrimestre != 2) {
-        std::cout << "Opción no válida. Debe seleccionar 1 o 2.\n";
+        std::cout << "Opción no válida. Debe seleccionar 1 o 2.\n\n";
         return;
     }
 
@@ -130,9 +119,9 @@ void inscribirAlumno() {
                          << nuevoAlumno.correo << ", "  // Correo electrónico
                          << nombrePlan << ", "  // Nombre del plan
                          << cuatrimestre << " cuatrimestre(s)\n";  // Duración del plan
-        std::cout << "Inscripción confirmada correctamente.\n";
+        std::cout << "Inscripción confirmada correctamente.\n\n";
     } else {
-        std::cout << "Inscripción cancelada.\n";
+        std::cout << "Inscripción cancelada.\n\n";
     }
 }
 
@@ -147,7 +136,7 @@ void agregarPlan() {
     std::cout << "Ingrese la universidad de origen: ";
     std::getline(std::cin, universidadOrigen);
     if (!perteneceAUniversidad(universidadOrigen)) {
-        std::cout << "La universidad de origen no se encuentra en el programa SICUE.\n";
+        std::cout << "La universidad de origen no se encuentra en el programa SICUE.\n\n";
         return;
     }
 
@@ -155,7 +144,7 @@ void agregarPlan() {
     std::cout << "Ingrese la universidad de destino: ";
     std::getline(std::cin, universidadDestino);
     if (!perteneceAUniversidad(universidadDestino)) {
-        std::cout << "La universidad de destino no se encuentra en el programa SICUE.\n";
+        std::cout << "La universidad de destino no se encuentra en el programa SICUE.\n\n";
         return;
     }
 
@@ -163,7 +152,7 @@ void agregarPlan() {
     std::cout << "Ingrese la carrera asociada al plan: ";
     std::getline(std::cin, carrera);
     if (!existeCarrera(carrera)) {
-        std::cout << "La carrera no existe en el sistema.\n";
+        std::cout << "La carrera no existe en el sistema.\n\n";
         return;
     }
 
@@ -175,7 +164,7 @@ void agregarPlan() {
     }
     archivo << nombrePlan << ": " << universidadOrigen << " --> " << universidadDestino  << ", Carrera: " << carrera << "\n";
 
-    std::cout << "Plan de convalidación agregado correctamente.\n";
+    std::cout << "Plan de convalidación agregado correctamente.\n\n";
 }
 
 void consultarInscripcion() {
@@ -186,7 +175,6 @@ void consultarInscripcion() {
     std::ifstream archivo("inscritos.txt");
     std::string linea;
     bool encontrado = false;
-<<<<<<< HEAD
 
     // Leemos cada línea del archivo
     while (getline(archivo, linea)) {
@@ -234,25 +222,24 @@ void consultarInscripcion() {
 
             // Estado de la inscripción (puedes definir su valor o buscarlo en el archivo si es necesario)
             estado = "En trámite";  // Ajusta esto si el estado está en el archivo
-            std::cout << "Estado de la inscripción: " << estado << "\n";
+            std::cout << "Estado de la inscripción: " << estado << "\n\n";
 
             break;
         }
     }
 
     if (!encontrado) {
-        std::cout << "Alumno con DNI " << dni << " no encontrado. Aún no está inscrito.\n";
+        std::cout << "Alumno con DNI " << dni << " no encontrado. Aun no está inscrito.\n\n";
     }
-=======
+
     while (getline(archivo, linea)) {
         if (linea.find(dni) != std::string::npos) {
-            std::cout << "Información del alumno: " << linea << "\n";
+            std::cout << "Informacion del alumno: " << linea << "\n";
             encontrado = true;
             break;
         }
     }
-    if (!encontrado) std::cout << "Alumno no encontrado.\n";
->>>>>>> e63a7618487bf3ef99c076fe214f28da6bd2abd9
+    if (!encontrado) std::cout << "Alumno no encontrado.\n\n";
 }
 
 void mostrarInscritos() {
@@ -264,17 +251,47 @@ void mostrarInscritos() {
     }
 }
 
-void pruebasErrores() {
-    std::cout << "\n--- Pruebas de errores ---\n";
 
+void pruebaPerteneceAUniversidad() {
+    std::cout << "Prueba: perteneceAUniversidad\n";
+    assert(perteneceAUniversidad("Universidad de Cordoba") == true);
+    std::cout << "La Universidad de Cordoba se encuentra en el fichero universidades.txt\n";
+    assert(perteneceAUniversidad("Universidad de Zaragoza") == true);
+    std::cout << "La Universidad de Zaragoza se encuentra en el fichero universidades.txt\n";
+    assert(perteneceAUniversidad("Universidad de Saturno") == false);
+    std::cout << "La Universidad de Saturno NO se encuentra en el fichero universidades.txt\n";
+    std::cout << "Prueba perteneceAUniversidad completada con exito.\n\n";
+}
+
+void pruebaExisteCarrera() {
+    std::cout << "Prueba: existeCarrera\n";
+    assert(existeCarrera("Ingenieria Informatica") == true);
+    std::cout << "Ingenieria Informatica existe en carrera.txt\n";
+    assert(existeCarrera("Psicologia") == true);
+    std::cout << "Psicologia existe en carrera.txt\n";
+    assert(existeCarrera("Astronomia") == false);
+    std::cout << "Astronomia NO existe en carrera.txt\n";
+    std::cout << "Prueba existeCarrera completada con exito.\n\n";
+}
+
+void pruebasErrores(){
+    std::cout << "\n--- Ejecutando pruebas..\n";
+    //Prueba 1
+    pruebaPerteneceAUniversidad();
+
+    //Prueba 2
+    pruebaExisteCarrera();
+   
+    //Prueba 3:
     std::cout << "1. Intentar agregar un plan con universidad inexistente.\n";
     agregarPlan();
 
-    std::cout << "2. Intentar inscribir un alumno en una carrera inválida.\n";
+    //Prueba 4:
+    std::cout << "2. Intentar inscribir un alumno en una carrera invalida.\n";
     inscribirAlumno();
 
+    //Prueba 5:
     std::cout << "3. Consultar un alumno inexistente.\n";
     consultarInscripcion();
+    std::cout << "--- Todas las pruebas completadas con exito ---\n";
 }
-
-
