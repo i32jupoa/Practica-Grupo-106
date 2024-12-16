@@ -38,5 +38,7 @@ void pruebasErrores();
 std::string obtenerFechaActual();
 void pruebaPerteneceAUniversidad();
 void pruebaExisteCarrera();
+void pruebaObtenerFechaActual();
+void pruebaGenerarFichero();
 
 #endif

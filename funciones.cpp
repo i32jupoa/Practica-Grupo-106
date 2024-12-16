@@ -274,24 +274,69 @@ void pruebaExisteCarrera() {
     std::cout << "Prueba existeCarrera completada con exito.\n\n";
 }
 
+
+void pruebaObtenerFechaActual() {
+    std::cout << "Prueba: obtenerFechaActual\n";
+    std::string fecha = obtenerFechaActual();
+    assert(fecha.size() == 10); // Verifica el formato AAAA-MM-DD
+    std::cout << "Fecha obtenida: " << fecha << "\n";
+    std::cout << "Prueba obtenerFechaActual completada con exito.\n\n";
+}
+
+void pruebaGenerarFichero() {
+    std::cout << "Prueba: Generar un fichero\n";
+
+    // Crear el fichero de prueba
+    std::string nombreFichero = "fichero_prueba.txt";
+    std::ofstream archivo(nombreFichero);
+
+    // Escribir datos de prueba en el archivo
+    archivo << "DNI: 12345678A\n";
+    archivo << "Nombre: Fernando\n";
+    archivo << "Correo: fernandoalonso@uco.es\n";
+
+    // Cerrar el archivo
+    archivo.close();
+
+    // Verificar si el fichero fue creado y contiene los datos esperados
+    std::ifstream archivoVerificacion(nombreFichero);
+    assert(archivoVerificacion.is_open() && "El fichero no se pudo abrir.");
+
+    std::string linea;
+    bool encontrado = false;
+    while (getline(archivoVerificacion, linea)) {
+        if (linea == "DNI: 12345678A") {
+            encontrado = true;
+            break;
+        }
+    }
+
+     assert(encontrado && "El contenido esperado no se encontró en el archivo.");
+
+    std::cout << "Fichero de prueba generado correctamente y verificado.\n\n";
+}
+
 void pruebasErrores(){
     std::cout << "\n--- Ejecutando pruebas..\n";
     //Prueba 1
     pruebaPerteneceAUniversidad();
-
     //Prueba 2
     pruebaExisteCarrera();
-   
+
+
     //Prueba 3:
     std::cout << "1. Intentar agregar un plan con universidad inexistente.\n";
     agregarPlan();
-
     //Prueba 4:
     std::cout << "2. Intentar inscribir un alumno en una carrera invalida.\n";
     inscribirAlumno();
-
     //Prueba 5:
     std::cout << "3. Consultar un alumno inexistente.\n";
     consultarInscripcion();
     std::cout << "--- Todas las pruebas completadas con exito ---\n";
+
+    //Prueba 6:
+    pruebaObtenerFechaActual();
+    //Prueba 7:
+    pruebaGenerarFichero();
 }
