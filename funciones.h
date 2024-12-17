@@ -11,13 +11,14 @@
 #include <cctype>
 #include <algorithm>
 
-struct Alumno {
+struct Usuario {
     std::string nombre;
     std::string apellidos;
     std::string dni;
     std::string correo;
     std::string estadoInscripcion;
     std::string fechaInscripcion;
+    std::string tipoUsuario;
 };
 
 struct Plan {
@@ -30,13 +31,16 @@ bool existeEnFichero(const std::string &dato, const std::string &fichero);
 bool perteneceAUniversidad(const std::string &universidad);
 bool existeCarrera(const std::string &carrera);
 bool existePlan(const std::string &nombrePlan);
-void inscribirAlumno();
+void inscribirUsuario();
 void agregarPlan();
 void consultarInscripcion();
 void mostrarInscritos();
 void pruebasErrores();
+void mostrarPlanes(); 
 std::string obtenerFechaActual();
 void pruebaPerteneceAUniversidad();
 void pruebaExisteCarrera();
+void pruebaObtenerFechaActual();
+void pruebaGenerarFichero();
 
 #endif
