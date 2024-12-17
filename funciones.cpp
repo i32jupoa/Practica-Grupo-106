@@ -215,73 +215,67 @@ void consultarInscripcion() {
     std::getline(std::cin, dni);
 
     std::ifstream archivo("inscritos.txt");
+    if (!archivo.is_open()) {
+        std::cerr << "Error al abrir el archivo 'inscritos.txt'.\n";
+        return;
+    }
+
     std::string linea;
     bool encontrado = false;
 
     // Leemos cada línea del archivo
     while (getline(archivo, linea)) {
-        // Verificamos si la línea contiene el DNI del Usuario
-        if (linea.find(dni) != std::string::npos) {
-            encontrado = true;
-
-            // Extraemos la información relevante
-            std::string nombre, apellidos, correo, plan, cuatrimestres, estado, fechaInscripcion;
-            size_t pos = 0;
+        size_t pos = linea.find(", ");  // Buscar la posición del primer delimitador (', ')
+        if (pos != std::string::npos) {
+            std::string dniUsuario = linea.substr(0, pos);  // Extraer el DNI al inicio de la línea
             
-            // Obtenemos el DNI (es lo primero en la línea)
-            pos = linea.find(", ");
-            std::string dniUsuario = linea.substr(0, pos);
-            linea = linea.substr(pos + 2);
+            if (dniUsuario == dni) {  // Comparación estricta
+                encontrado = true;
 
-            // Obtenemos el nombre completo
-            pos = linea.find(", ");
-            nombre = linea.substr(0, pos);
-            linea = linea.substr(pos + 2);
+                // Extraer los datos restantes
+                std::string nombre, correo, plan, cuatrimestres, fechaInscripcion, estado;
 
-            // Obtenemos el correo
-            pos = linea.find(", ");
-            correo = linea.substr(0, pos);
-            linea = linea.substr(pos + 2);
+                // Obtener Nombre completo
+                linea = linea.substr(pos + 2);
+                pos = linea.find(", ");
+                nombre = linea.substr(0, pos);
+                linea = linea.substr(pos + 2);
 
-            // Obtenemos el plan
-            pos = linea.find(", ");
-            plan = linea.substr(0, pos);
-            linea = linea.substr(pos + 2);
+                // Obtener Correo
+                pos = linea.find(", ");
+                correo = linea.substr(0, pos);
+                linea = linea.substr(pos + 2);
 
-            // Obtenemos los cuatrimestres
-            pos = linea.find(", ");
-            cuatrimestres = linea.substr(0, pos);
-            linea = linea.substr(pos + 2);
+                // Obtener Plan
+                pos = linea.find(", ");
+                plan = linea.substr(0, pos);
+                linea = linea.substr(pos + 2);
 
-            // Mostramos la información detallada
-            std::cout << "Inscripción de: " << nombre << ", con DNI: " << dniUsuario << "\n";
-            std::cout << "Plan seleccionado: " << plan << "\n";
-            std::cout << "Duración: " << cuatrimestres << "\n";
+                // Obtener Cuatrimestres
+                pos = linea.find(", ");
+                cuatrimestres = linea.substr(0, pos);
+                linea = linea.substr(pos + 2);
 
-            // Fecha de inscripción (si está en el archivo, la agregas aquí)
-            fechaInscripcion = obtenerFechaActual();  // Aquí puedes poner la fecha real si está en el archivo
-            std::cout << "Fecha de inscripción: " << fechaInscripcion << "\n";
+                // Obtener Fecha de inscripción
+                fechaInscripcion = obtenerFechaActual(); // Se podría leer del archivo si estuviese presente.
 
-            // Estado de la inscripción (puedes definir su valor o buscarlo en el archivo si es necesario)
-            estado = "En trámite";  // Ajusta esto si el estado está en el archivo
-            std::cout << "Estado de la inscripción: " << estado << "\n\n";
+                // Mostrar la información extraída
+                std::cout << "Inscripción de: " << nombre << ", con DNI: " << dniUsuario << "\n";
+                std::cout << "Correo: " << correo << "\n";
+                std::cout << "Plan seleccionado: " << plan << "\n";
+                std::cout << "Duración: " << cuatrimestres << "\n";
+                std::cout << "Fecha de inscripción: " << fechaInscripcion << "\n";
+                std::cout << "Estado de la inscripción: Confirmado\n\n";  // Estado fijo como ejemplo
 
-            break;
+                break;  // Salimos del bucle al encontrar el DNI
+            }
         }
     }
 
     if (!encontrado) {
-        std::cout << "Usuario con DNI " << dni << " no encontrado. Aun no está inscrito.\n\n";
+        std::cout << "Usuario con DNI " << dni << " no encontrado. Aún no está inscrito.\n\n";
     }
-
-    while (getline(archivo, linea)) {
-        if (linea.find(dni) != std::string::npos) {
-            std::cout << "Informacion del Usuario: " << linea << "\n";
-            encontrado = true;
-            break;
-        }
-    }
-    if (!encontrado) std::cout << "Usuario no encontrado.\n\n";
+    archivo.close();
 }
 
 void mostrarInscritos() {
@@ -404,37 +398,30 @@ void pruebasErrores(){
 
     //Prueba 1
     pruebaPerteneceAUniversidad();
+
     //Prueba 2
     pruebaExisteCarrera();
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 6cd2e4ddc235da884d329343fe56db420ea257fd
     //Prueba 3:
-    std::cout << "1. Intentar agregar un plan con universidad inexistente.\n";
+    std::cout << "Intentar agregar un plan con universidad de Destino inexistente.\n";
     agregarPlan();
-    //Prueba 4:
-<<<<<<< HEAD
-    std::cout << "2. Intentar inscribir un Usuario en una carrera invalida.\n";
-    inscribirUsuario();
 
-=======
-    std::cout << "2. Intentar inscribir un alumno en una carrera invalida.\n";
-    inscribirAlumno();
->>>>>>> 6cd2e4ddc235da884d329343fe56db420ea257fd
+    //Prueba 4:
+    std::cout << "Intentar hacer un plan con carrera invalida.\n";
+    agregarPlan();
+
     //Prueba 5:
-    std::cout << "3. Consultar un Usuario inexistente.\n";
+    std::cout << "Consultar un Usuario con DNI inexistente.\n";
     consultarInscripcion();
 
     //Prueba 6:
-    pruebaObtenerFechaActual();
+    std::cout <<"Intentar hacer una inscripcion de mas de 2 cuatrimestres\n";
+    inscribirUsuario();
+
     //Prueba 7:
+    pruebaObtenerFechaActual();
+
+    //Prueba 8:
     pruebaGenerarFichero();
     std::cout << "--- Todas las pruebas completadas con exito ---\n";
-
-    //Prueba 6:
-    pruebaObtenerFechaActual();
-    //Prueba 7:
-    pruebaGenerarFichero();
 }
