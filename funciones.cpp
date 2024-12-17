@@ -424,4 +424,8 @@ void pruebasErrores(){
     //Prueba 8:
     pruebaGenerarFichero();
     std::cout << "--- Todas las pruebas completadas con exito ---\n";
+    
+    //Prueba 9:
+    std::cout << "Cancelar la inscripcion antes de confirmarla\n";
+    inscribirUsuario();
 }
