@@ -404,18 +404,25 @@ void pruebasErrores(){
 
     //Prueba 1
     pruebaPerteneceAUniversidad();
-
     //Prueba 2
     pruebaExisteCarrera();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6cd2e4ddc235da884d329343fe56db420ea257fd
     //Prueba 3:
     std::cout << "1. Intentar agregar un plan con universidad inexistente.\n";
     agregarPlan();
-
     //Prueba 4:
+<<<<<<< HEAD
     std::cout << "2. Intentar inscribir un Usuario en una carrera invalida.\n";
     inscribirUsuario();
 
+=======
+    std::cout << "2. Intentar inscribir un alumno en una carrera invalida.\n";
+    inscribirAlumno();
+>>>>>>> 6cd2e4ddc235da884d329343fe56db420ea257fd
     //Prueba 5:
     std::cout << "3. Consultar un Usuario inexistente.\n";
     consultarInscripcion();
@@ -425,4 +432,9 @@ void pruebasErrores(){
     //Prueba 7:
     pruebaGenerarFichero();
     std::cout << "--- Todas las pruebas completadas con exito ---\n";
+
+    //Prueba 6:
+    pruebaObtenerFechaActual();
+    //Prueba 7:
+    pruebaGenerarFichero();
 }
