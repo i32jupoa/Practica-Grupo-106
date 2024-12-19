@@ -198,13 +198,35 @@ void agregarPlan() {
         return;
     }
 
-    // 5. Guardar el plan en el fichero planes.txt
+    // 5. Guardar las asignaturas que se desean convalidar
+    std::vector<std::string> asignaturas;
+    std::string asignatura;
+    char agregarOtra;
+
+    std::cout << "Ingrese las asignaturas que desea convalidar (al introducir una, pulsar intro):\n";
+    do {
+        std::cout << "Asignatura: ";
+        std::getline(std::cin, asignatura);
+        asignaturas.push_back(asignatura);
+
+        std::cout << "¿Desea agregar otra asignatura? (S/N): ";
+        std::cin >> agregarOtra;
+        std::cin.ignore(); // Limpiar el buffer
+    } while (agregarOtra == 'S' || agregarOtra == 's');
+
+    // 6. Guardar el plan y sus asignaturas en el fichero planes.txt
     std::ofstream archivo("planes.txt", std::ios::app);
     if (!archivo) {
         std::cerr << "Error al abrir el fichero de planes.\n";
         return;
     }
-    archivo << nombrePlan << ": " << universidadOrigen << " --> " << universidadDestino  << ", Carrera: " << carrera << "\n";
+    archivo << nombrePlan << ": " << universidadOrigen << " --> " << universidadDestino
+            << ", Carrera: " << carrera << "\n";
+    archivo << "Asignaturas convalidadas:\n";
+    for (const auto &asig : asignaturas) {
+        archivo << "- " << asig << "\n";
+    }
+    archivo << "\n\n"; // Añadir una línea extra para separar los planes
 
     std::cout << "Plan de convalidación agregado correctamente.\n\n";
 }
@@ -317,6 +339,9 @@ void mostrarPlanes() {
         if (!linea.empty()) {
             std::cout << linea << "\n";
             encontrado = true;
+        } else {
+            // Si hay una línea vacía en el archivo, imprime una línea adicional
+            std::cout << "\n";
         }
     }
 
@@ -419,13 +444,13 @@ void pruebasErrores(){
     inscribirUsuario();
 
     //Prueba 7:
-    pruebaObtenerFechaActual();
-
-    //Prueba 8:
-    pruebaGenerarFichero();
-    std::cout << "--- Todas las pruebas completadas con exito ---\n";
-    
-    //Prueba 9:
     std::cout << "Cancelar la inscripcion antes de confirmarla\n";
     inscribirUsuario();
+
+    //Prueba 8:
+    pruebaObtenerFechaActual();
+
+    //Prueba 9:
+    pruebaGenerarFichero();
+    std::cout << "--- Todas las pruebas completadas con exito ---\n";
 }
